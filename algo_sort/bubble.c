@@ -38,7 +38,7 @@ int random_num(unsigned int* seed, int range_min, int range_max)
 
   /* Calc value */
   delta = range_max - range_min;
-  val = range_min + (seed % delta);
+  val = range_min + (*seed % delta);
 
   /* Return number */
   return val;
@@ -48,14 +48,15 @@ int random_num(unsigned int* seed, int range_min, int range_max)
 // This is display function; print list to stdout
 void display_list(int* p, int length, int flag_rv, int flag_nl)
 {
-  if (flag_rv)
+  if (flag_rv == 1)
     putchar('\r');
   for (int i=0; i<length-1; i++)
-    printf("%d ", *(p+i));
-  if (flag_nl)
+    printf("%+4d ", *(p+i));
+  if (flag_nl == 1)
     putchar('\n');
   fflush(stdout);
 }
+
 
 // This is sort (asc) function (Algorithm: Bubble-Sort)
 //        argument: p, length
@@ -67,15 +68,14 @@ void bubble_sort_asc(int* p, int length)
   int tmp;
   for (int i=0; i<length-1; i++)
   {
-    for (int j=i; j<length-1; j++)
+    for (int j=0; j<length-1-i; j++)
     {
-      if(*(p+i) > *(p+j+1))
+      if(*(p+j) > *(p+j+1))
       {
         tmp = *(p+j);
         *(p+j) = *(p+j+1);
         *(p+j+1) = tmp;
       }
-      display_list(p, length, 1, 0);
     }
   }
 }
@@ -96,15 +96,15 @@ int main(void)
   unsigned int seed;
   int seed_flag = 0;
   printf("random seed? (random: 1 / constant: other) >>> ");
-  scanf("%d", seed_flag);
+  scanf("%d", &seed_flag);
   if (seed_flag == 1)
-    seed_flag = time(NULL);
+    seed = time(NULL);
   else
-    seed_flag = SEED_INIT;
-
+    seed = SEED_INIT;
   /* Create array */
   int* arr_org = (int*)malloc(sizeof(int)*L);
   int* arr_sort = (int*)malloc(sizeof(int)*L);
+
   for(int i=0; i<L; i++)
   {
     *(arr_org+i) = random_num(&seed, -L*L, L*L);
