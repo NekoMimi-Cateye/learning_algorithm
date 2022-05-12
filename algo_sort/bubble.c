@@ -16,7 +16,7 @@ Filename: ./algosort/bubble.c
 #define SEED_INIT 0 // default initial seed value
 
 // functions
-int random_num(unsigned int, int, int);
+int random_num(unsigned int*, int, int);
 void display_list(int*, int, int, int);
 void bubble_sort_asc(int*, int);
 
@@ -26,15 +26,15 @@ void bubble_sort_asc(int*, int);
 //    range_min: (No discription)
 //    range_max: (No discription)
 //  returned value: val =[range_min, range_max)
-int random_num(unsigned int seed, int range_min, int range_max)
+int random_num(unsigned int* seed, int range_min, int range_max)
 {
   /* Decline valiables */
   int delta, val;
 
   /* Update seed value */
-  seed ^= (seed << 13);
-  seed ^= (seed >> 17);
-  seed ^= (seed << 15);
+  *seed ^= (*seed << 13);
+  *seed ^= (*seed >> 17);
+  *seed ^= (*seed << 15);
 
   /* Calc value */
   delta = range_max - range_min;
@@ -51,7 +51,7 @@ void display_list(int* p, int length, int flag_rv, int flag_nl)
   if (flag_rv)
     putchar('\r');
   for (int i=0; i<length-1; i++)
-    printf("%d ");
+    printf("%d ", *(p+i));
   if (flag_nl)
     putchar('\n');
   fflush(stdout);
@@ -107,7 +107,7 @@ int main(void)
   int* arr_sort = (int*)malloc(sizeof(int)*L);
   for(int i=0; i<L; i++)
   {
-    *(arr_org+i) = random_num(seed, -L*L, L*L);
+    *(arr_org+i) = random_num(&seed, -L*L, L*L);
     *(arr_sort+i) = *(arr_org+i);
   }
 
