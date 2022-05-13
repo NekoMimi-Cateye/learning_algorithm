@@ -18,7 +18,8 @@ Filename: ./algosort/quick.c
 // functions
 int random_num(unsigned int*, int, int);
 void display_list(int*, int, int, int);
-void quick_sort_asc(int*, int);
+void swap(int*, int*);
+void quick_sort_asc(int*, int, int*);
 
 // This is random function (Algorithm: Xorshift32)
 //        argument: seed, range_min, range_max
@@ -50,7 +51,7 @@ void display_list(int* p, int length, int flag_rv, int flag_nl)
 {
   if (flag_rv == 1)
     putchar('\r');
-  for (int i=0; i<length-1; i++)
+  for (int i=0; i<length; i++)
     printf("%+4d ", *(p+i));
   if (flag_nl == 1)
     putchar('\n');
@@ -78,33 +79,41 @@ void swap(int* p1, int* p2)
 void quick_sort_asc(int* p, int length, int* seed)
 {
   int piv = random_num(seed, 0, length);
+  swap(p+piv, p);
   int num_r = 0;
   int num_n = 1;
   int num_l = 0;
   for(int i=1; i<length; i++)
   {
-    if (*(p+i)==*(p+piv))
+    if (*(p+i)==*(p))
     {
-      swap(p+num_n, p+i);      
+      swap(p+num_n, p+i);
       num_n++;
     }
   }
-  for(int i=num_n; i < length; i++)
+  while(num_l+num_n+num_r < length)
   {
-    if (*(p+i)<*(p+piv))
+    if (*(p+num_n+num_l)<*(p))
     {
-      swap(p+num_n+num_l, p+i);
       num_l++;
     }
     else
     {
-      swap(p+length-num_r-1, p+i);
+      swap(p+length-num_r-1, p+num_n+num_l);
       num_r++;
     }
   }
   for(int i=0; i<num_n; i++)
   {
     swap(p+num_n+num_l-1-i, p+i);
+  }
+  if (num_l > 1)
+  {
+    quick_sort_asc(p, num_l, seed);
+  }
+  if (num_r > 1)
+  {
+    quick_sort_asc(p+num_l+num_n, num_r, seed);
   }
 }
 
@@ -141,7 +150,7 @@ int main(void)
   display_list(arr_org, L, 0, 1);
 
   /* Sort array */
-  quick_sort_asc(arr_sort, L);
+  quick_sort_asc(arr_sort, L, &seed);
 
   /* Display result */
   display_list(arr_sort, L, 1, 1);
