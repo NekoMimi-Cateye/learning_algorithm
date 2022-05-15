@@ -15,53 +15,11 @@ Filename: ./algosort/insertion.c
 // constants
 #define SEED_INIT 0 // default initial seed value
 
-// Node for List structure
-//  elements: number, next
-//  number(int): number
-//  after(p-node): next node
-typedef struct node {
-  int number;
-  struct node *next; 
-}node;
-
 // functions
-node* list_append(struct node*, int);
-
 int random_num(unsigned int*, int, int);
-void display_list(node*, int, int, int);
-void insertion_sort_asc(/* arguments */);
+void display_list(int*, int, int, int);
+void insertion_sort_asc(int*, int);
 
-
-// This is connection function (for list structure)
-//        argument: p, number
-//         p: pointer of list which'll appended element
-//    number: number for save at new elements
-//  returned value: (n or p)
-//    (n or p): first element of list (pointer-style)
-node* list_append(node* p, int number)
-{
-  /* Create new element */
-  node* n = (node*)malloc(sizeof(node));
-  n->number = number;
-
-  /* This is last so next is NULL */
-  n->next = NULL;
-
-  /* return : first element (pointer) */
-  if (p == NULL)
-    return n;
-  else
-  {
-    /* Search last element */
-    node* tmp = p;
-    while (tmp->next != NULL)
-      tmp = tmp->next;
-
-    /* connect last element to new element */
-    tmp->next = n;
-    return p;
-  }
-}
 
 // This is random function (Algorithm: Xorshift32)
 //        argument: seed, range_min, range_max
@@ -89,27 +47,45 @@ int random_num(unsigned int* seed, int range_min, int range_max)
 
 
 // This is display function; print list to stdout
-void display_list(node* p, int length, int flag_rv, int flag_nl)
+void display_list(int* p, int length, int flag_rv, int flag_nl)
 {
-  node *curt = p;
   if (flag_rv == 1)
     putchar('\r');
-  while(curt != NULL)
-  {
-    printf("%+4d ", curt->number);
-    curt = curt->next;
-  }
+  for (int i=0; i<length; i++)
+    printf("%+4d ", *(p+i));
   if (flag_nl == 1)
     putchar('\n');
   fflush(stdout);
 }
 
 
-// (TODO) This is sort (asc) function (Algorithm: Insertion-Sort)
-void insertion_sort_asc(/* arguments */)
+// This is sort (asc) function (Algorithm: Insertion-Sort)
+//        argument: p, length
+//         p: array which need to be sorted
+//    length: length of p
+//  returned value: None
+void insertion_sort_asc(int* p, int length)
 {
-  /* code here */
-}
+  int tmp;
+  int i, j, k;
+  for (i=1; i<length; i++)
+  {
+    tmp = *(p+i);
+
+    /* search position to insertion */
+    for (j=0; j<i; j++)
+      if (*(p+j) > tmp)
+        break;
+
+    /* slide numbers to right */
+    for (k=i; k>j; k--)
+    {
+      *(p+k) = *(p+k-1);
+    }
+
+    /* insertion */
+    *(p+j) = tmp;
+  }
 
 // This is main function
 //       argument: None
@@ -130,25 +106,28 @@ int main(void)
     seed = time(NULL);
   else
     seed = SEED_INIT;
-
-  /* Create list */
-  node* list = NULL;
+  /* Create array */
+  int* arr_org = (int*)malloc(sizeof(int)*L);
+  int* arr_sort = (int*)malloc(sizeof(int)*L);
 
   for(int i=0; i<L; i++)
   {
-    list = list_append(list, random_num(&seed, -L*L, L*L));
+    *(arr_org+i) = random_num(&seed, -L*L, L*L);
+    *(arr_sort+i) = *(arr_org+i);
   }
 
   /* Display orginal */
-  display_list(list, L, 0, 1);
+  display_list(arr_org, L, 0, 1);
 
-  /* (TODO) Sort array */
+  /* Sort array */
+  insertion_sort_asc(arr_sort, L);
 
   /* Display result */
-  display_list(list, L, 1, 1);
+  display_list(arr_sort, L, 1, 1);
 
   /* Free memory */
-  free(list);
+  free(arr_org);
+  free(arr_sort);
   /* Return code */
   return 0;
 }
