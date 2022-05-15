@@ -86,6 +86,7 @@ void insertion_sort_asc(int* p, int length)
     /* insertion */
     *(p+j) = tmp;
   }
+}
 
 // This is main function
 //       argument: None
