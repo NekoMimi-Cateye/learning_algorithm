@@ -50,7 +50,7 @@ void display_list(int* p, int length, int flag_rv, int flag_nl)
 {
   if (flag_rv == 1)
     putchar('\r');
-  for (int i=0; i<length-1; i++)
+  for (int i=0; i<length; i++)
     printf("%+4d ", *(p+i));
   if (flag_nl == 1)
     putchar('\n');
