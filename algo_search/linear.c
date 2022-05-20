@@ -1,5 +1,5 @@
 /*--------------------------------------------------/
-Filename: ./algosort/search.c
+Filename: ./algo_search/linear.c
   Auther: NekoMimi (Nekomimi-Cateye)
     Date: 2022/05/17
 
